@@ -1,0 +1,17 @@
+{
+  "inputOutputWords" : {
+    "inputWords": [
+      "inputField"
+    ],
+    "outputWords": [
+      "outputField"
+    ]
+  },
+  "dbConfig": {
+    "driver"  : "pg",
+    "user"    : "utopology",
+    "password": "123456",
+    "host"    : "localhost",
+    "database": "topology"
+  }
+}

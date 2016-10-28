@@ -12,5 +12,8 @@
   },
   "author": "pi0ner",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/pi0ner/sql-symmetric-obfuscator#readme"
+  "homepage": "https://bitbucket.org/pi0ner/sql-symmetric-obfuscator#readme",
+  "dependencies": {
+    "fg": "0.0.3"
+  }
 }
