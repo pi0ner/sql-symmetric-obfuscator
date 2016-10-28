@@ -13,10 +13,16 @@ var userConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'userConfig.
 
 //Module config
 var migrationConfig = moduleConfig.migration;
-//User config
-var inputOutputWords = userConfig.inputOutputWords
 var sqlDialect = moduleConfig.postgres;
+var keywords = sqlDialect.keywords;
+
+//User config
+
 var dbSetting = userConfig.dbConfig;
+
+var userWords = [];
+userWords.push(userConfig.inputOutputWords.inputWords);
+userWords.push(userConfig.inputOutputWords.outputWords);
 
 var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
@@ -29,9 +35,22 @@ function obfuscate(input) {
     fs.writeFileSync(outputFilename,input)
 }
 
+//Maching
+function matchUserAndSqlWords(userWords, sqlKeywords) {
+    var mathes = [];
+    userWords.forEach(function (word) {
+        if(sqlKeywords.indexOf(String(word).toUpperCase())>-1){
+            mathes.push(word);
+        }
+    });
+    if(mathes.length)console.log(`Warning fields: [${mathes}] is sql keywords`);
+}
+
+matchUserAndSqlWords(userWords,keywords);
+
 function sqlSymmetricObfuscator() {
     console.log(`Loading postgres version ${sqlDialect.version}, dictionary contains ${sqlDialect.keywords.length} words`);
-    console.log("Input and output words " + inputOutputWords.inputWords + " "+ inputOutputWords.outputWords );
+
     console.log('obfuscation started...');
 
     console.log("out file name: " + outputFilename);

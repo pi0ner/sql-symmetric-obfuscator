@@ -1,10 +1,10 @@
 {
   "inputOutputWords" : {
     "inputWords": [
-      "inputField"
+      "select"
     ],
     "outputWords": [
-      "outputField"
+      "insert"
     ]
   },
   "dbConfig": {
