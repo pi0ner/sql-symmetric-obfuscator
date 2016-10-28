@@ -13,5 +13,9 @@
     "password": "123456",
     "host"    : "localhost",
     "database": "topology"
+  },
+  "environment":{
+    "inputFilename":"create_view.sql",
+    "_outputFilename":"obfuscated_create_view.sql"
   }
 }
