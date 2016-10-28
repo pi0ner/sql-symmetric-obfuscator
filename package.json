@@ -1,0 +1,16 @@
+{
+  "name": "sql-symmetric-obfuscator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://pi0ner@bitbucket.org/pi0ner/sql-symmetric-obfuscator.git"
+  },
+  "author": "pi0ner",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/pi0ner/sql-symmetric-obfuscator#readme"
+}
