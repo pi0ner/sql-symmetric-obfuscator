@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "start" : "node index",
+    "test": "node ./node_modules/mocha/bin/mocha --reporter spec tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -14,6 +15,11 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/pi0ner/sql-symmetric-obfuscator#readme",
   "dependencies": {
-    "fg": "0.0.3"
+    "chai": "^3.5.0",
+    "fg": "0.0.3",
+    "mocha": "^3.1.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
   }
 }

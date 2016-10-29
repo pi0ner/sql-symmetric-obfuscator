@@ -14,7 +14,7 @@ var userConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'userConfig.
 //Module config
 var migrationConfig = moduleConfig.migration;
 var sqlDialect = moduleConfig.postgres;
-var keywords = sqlDialect.keywords;
+var sqlKeywords = sqlDialect.keywords;
 
 //User config
 
@@ -30,26 +30,32 @@ var outputFilename = userConfig.environment.outputFilename ?
 
 
 //TODO: const input
-function obfuscate(input) {
+function obfuscate(input,callback) {
     var ouput = input;
-    fs.writeFileSync(outputFilename,input)
+    callback(ouput);
 }
 
 //Maching
-function matchUserAndSqlWords(userWords, sqlKeywords) {
-    var mathes = [];
+function matchUserAndSqlWords(callback) {
+    var matches = [];
     userWords.forEach(function (word) {
         if(sqlKeywords.indexOf(String(word).toUpperCase())>-1){
-            mathes.push(word);
+            matches.push(word);
         }
     });
-    if(mathes.length)console.log(`Warning fields: [${mathes}] is sql keywords`);
+    callback(matches);
 }
 
-matchUserAndSqlWords(userWords,keywords);
+function setUserWords(words) {
+    userWords = words;
+}
 
 function sqlSymmetricObfuscator() {
     console.log(`Loading postgres version ${sqlDialect.version}, dictionary contains ${sqlDialect.keywords.length} words`);
+
+    matchUserAndSqlWords(function (matches) {
+        if(matches.length)console.log(`Warning fields: [${matches}] is sql keywords`);
+    });
 
     console.log('obfuscation started...');
 
@@ -58,7 +64,9 @@ function sqlSymmetricObfuscator() {
     fs.readFile(path.resolve(__dirname, inputFilename), {encoding: 'utf8'}, function (err, data) {
         if (err) throw err;
         console.log("in " + inputFilename );
-        obfuscate(data);
+        obfuscate(data,function (obfuscatedData) {
+            fs.writeFileSync(outputFilename,obfuscatedData);
+        });
         console.log(`+ File ${inputFilename} obfuscated successfuly`);
     });
 
@@ -71,7 +79,11 @@ function sqlDeobfuscation() {
 
 module.exports = {
     sqlSymmetricObfuscator: sqlSymmetricObfuscator,
-    sqlDeobfuscation:   sqlDeobfuscation
+    sqlDeobfuscation:   sqlDeobfuscation,
+
+    obfuscate: obfuscate,
+    setUserWords: setUserWords,
+    matchUserAndSqlWords: matchUserAndSqlWords
 };
 
 /**
