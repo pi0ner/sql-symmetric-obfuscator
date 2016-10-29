@@ -44,6 +44,4 @@ describe("Obfuscator tests", function() {
             done(err);
         }
     });
-
-
 });

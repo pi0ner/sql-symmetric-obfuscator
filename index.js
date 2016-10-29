@@ -17,8 +17,8 @@ var sqlDialect = moduleConfig.postgres;
 var sqlKeywords = sqlDialect.keywords;
 
 //User config
-
 var dbSetting = userConfig.dbConfig;
+var obfuscationConfig = userConfig.obfuscateConfig;
 
 var userWords = [];
 userWords.push(userConfig.inputOutputWords.inputWords);
@@ -34,6 +34,14 @@ function tokensAndDelimites(data, callback) {
         return element?true:false
     }));
 }
+
+function getRandomName() {
+    return new Array(obfuscationConfig.wordLength).fill("hi").map(function (e) {
+        return Math.floor(Math.random()*(36-10) +10).toString(36)
+    }).join("");
+}
+
+console.log(getRandomName());
 
 //TODO: const input
 function obfuscate(input,callback) {

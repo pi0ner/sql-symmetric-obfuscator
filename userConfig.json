@@ -17,5 +17,9 @@
   "environment":{
     "inputFilename":"create_view.sql",
     "_outputFilename":"obfuscated_create_view.sql"
+  },
+
+  "obfuscateConfig":{
+    "wordLength" : 8
   }
 }
