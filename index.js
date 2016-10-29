@@ -28,11 +28,18 @@ var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
     userConfig.environment.outputFilename : "obfuscated_" + userConfig.environment.inputFilename;
 
+function tokensAndDelimites(data, callback) {
+    var output = data.split(/([, \n])/);
+    callback(output.filter(function (element) {
+        return element?true:false
+    }));
+}
 
 //TODO: const input
 function obfuscate(input,callback) {
-    var ouput = input;
-    callback(ouput);
+    tokensAndDelimites(input,function (output) {
+        callback(output.join(""));
+    });
 }
 
 //Maching
@@ -81,6 +88,7 @@ module.exports = {
     sqlSymmetricObfuscator: sqlSymmetricObfuscator,
     sqlDeobfuscation:   sqlDeobfuscation,
 
+    tokensAndDelimites: tokensAndDelimites,
     obfuscate: obfuscate,
     setUserWords: setUserWords,
     matchUserAndSqlWords: matchUserAndSqlWords

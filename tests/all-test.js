@@ -19,9 +19,10 @@ describe("Obfuscator tests", function() {
 
     it("obfuscate",function (done) {
         try{
-            var data = "select field1 from view1";
+            var data = "SELECT \n field1, field2 FROM view1; ";
+            var targetOutputData = "SELECT \n field1, field2 FROM view1; "
             obfuscator.obfuscate(data,function (obfuscatedData) {
-                expect(data).to.eql(obfuscatedData);
+                expect(obfuscatedData).to.eql(targetOutputData);
                 done();
             });
         } catch (err){
@@ -29,4 +30,20 @@ describe("Obfuscator tests", function() {
         }
 
     });
+
+    it("tokensAndDelimites",function (done) {
+        try{
+            var data = "SELECT \n field1, field2 FROM view1; ";
+            var splitedData = ["SELECT"," ","\n"," ","field1",","," ","field2"," ","FROM"," ","view1;"," "]
+
+            obfuscator.tokensAndDelimites(data,function (obfuscatedData) {
+                expect(obfuscatedData).to.eql(splitedData);
+                done();
+            });
+        } catch (err){
+            done(err);
+        }
+    });
+
+
 });
