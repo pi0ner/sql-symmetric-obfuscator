@@ -81,6 +81,9 @@
       "XMLPARSE","XMLPI","XMLQUERY","XMLROOT","XMLSCHEMA","XMLSERIALIZE","XMLTABLE","XMLTEXT","XMLVALIDATE","YEAR",
       "YES","ZONE"
     ],
+    "delimiters":[
+      " ",",",";","\n","\t"
+    ],
     "version":"9.5.5"
   }
 }

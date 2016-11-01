@@ -15,6 +15,7 @@ var userConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'userConfig.
 var migrationConfig = moduleConfig.migration;
 var sqlDialect = moduleConfig.postgres;
 var sqlKeywords = sqlDialect.keywords;
+var sqlDelimiters = sqlDialect.delimiters;
 
 //User config
 var dbSetting = userConfig.dbConfig;
@@ -24,12 +25,21 @@ var userWords = [];
 userWords.push(userConfig.inputOutputWords.inputWords);
 userWords.push(userConfig.inputOutputWords.outputWords);
 
+var unchangingWords = new Array;
+unchangingWords = unchangingWords.concat(sqlKeywords)
+    .concat(sqlDelimiters)
+    .concat(userConfig.inputOutputWords.inputWords)
+    .concat(userConfig.inputOutputWords.outputWords)
+;
+
+
 var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
     userConfig.environment.outputFilename : "obfuscated_" + userConfig.environment.inputFilename;
 
-function tokensAndDelimites(data, callback) {
-    var output = data.split(/([, \n])/);
+function tokensAndDelimiters(data, callback) {
+    // var output = data.split(new RegExp(sqlDelimiters.join("|")));//(/([, \n;])/);
+    var output = data.split(/([, \n;])/);
     callback(output.filter(function (element) {
         return element?true:false
     }));
@@ -41,12 +51,26 @@ function getRandomName() {
     }).join("");
 }
 
-console.log(getRandomName());
+function changeNames(inputArray, callback) {
+    console.log(unchangingWords.indexOf('COLUMN'))
+    var outputArray = inputArray.map(function(word){
+        if(unchangingWords.indexOf(String(word).toUpperCase())>-1){
+            // console.log(String(word).toUpperCase())
+            return word;
+        }else{
+            // console.log(String(word).toUpperCase())
+            return getRandomName();
+        }
+    })
+    callback(outputArray);
+}
 
 //TODO: const input
 function obfuscate(input,callback) {
-    tokensAndDelimites(input,function (output) {
-        callback(output.join(""));
+    tokensAndDelimiters(input,function (inputArray) {
+        changeNames(inputArray,function (changedArray) {
+            callback(changedArray.join(""));
+        })
     });
 }
 
@@ -80,6 +104,8 @@ function sqlSymmetricObfuscator() {
         if (err) throw err;
         console.log("in " + inputFilename );
         obfuscate(data,function (obfuscatedData) {
+
+            console.log(obfuscatedData);
             fs.writeFileSync(outputFilename,obfuscatedData);
         });
         console.log(`+ File ${inputFilename} obfuscated successfuly`);
@@ -96,7 +122,7 @@ module.exports = {
     sqlSymmetricObfuscator: sqlSymmetricObfuscator,
     sqlDeobfuscation:   sqlDeobfuscation,
 
-    tokensAndDelimites: tokensAndDelimites,
+    tokensAndDelimiters: tokensAndDelimiters,
     obfuscate: obfuscate,
     setUserWords: setUserWords,
     matchUserAndSqlWords: matchUserAndSqlWords
