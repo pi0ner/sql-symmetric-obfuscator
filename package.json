@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start" : "node index",
+    "start": "node index",
     "test": "node ./node_modules/mocha/bin/mocha --reporter spec tests/*.js"
   },
   "repository": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "chai": "^3.5.0",
     "fg": "0.0.3",
+    "hashmap": "^2.0.6",
     "mocha": "^3.1.2"
   },
   "devDependencies": {

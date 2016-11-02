@@ -2,10 +2,13 @@
 
  */
 
-var pg = require("pg");
-var fs = require("fs");
+"use strict";
 
+var fs = require("fs");
 var path = require("path");
+var extend = require("util")._extend;
+
+var words = require("./Words");
 
 //config jsons
 var moduleConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'obfuscatorConfig.json'), 'utf8'));
@@ -13,25 +16,10 @@ var userConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'userConfig.
 
 //Module config
 var migrationConfig = moduleConfig.migration;
-var sqlDialect = moduleConfig.postgres;
-var sqlKeywords = sqlDialect.keywords;
-var sqlDelimiters = sqlDialect.delimiters;
 
 //User config
 var dbSetting = userConfig.dbConfig;
 var obfuscationConfig = userConfig.obfuscateConfig;
-
-var userWords = [];
-userWords.push(userConfig.inputOutputWords.inputWords);
-userWords.push(userConfig.inputOutputWords.outputWords);
-
-var unchangingWords = new Array;
-unchangingWords = unchangingWords.concat(sqlKeywords)
-    .concat(sqlDelimiters)
-    .concat(userConfig.inputOutputWords.inputWords)
-    .concat(userConfig.inputOutputWords.outputWords)
-;
-
 
 var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
@@ -45,22 +33,9 @@ function tokensAndDelimiters(data, callback) {
     }));
 }
 
-function getRandomName() {
-    return new Array(obfuscationConfig.wordLength).fill("hi").map(function (e) {
-        return Math.floor(Math.random()*(36-10) +10).toString(36)
-    }).join("");
-}
-
 function changeNames(inputArray, callback) {
-    console.log(unchangingWords.indexOf('COLUMN'))
     var outputArray = inputArray.map(function(word){
-        if(unchangingWords.indexOf(String(word).toUpperCase())>-1){
-            // console.log(String(word).toUpperCase())
-            return word;
-        }else{
-            // console.log(String(word).toUpperCase())
-            return getRandomName();
-        }
+        return words.getNewName(word)
     })
     callback(outputArray);
 }
@@ -72,21 +47,6 @@ function obfuscate(input,callback) {
             callback(changedArray.join(""));
         })
     });
-}
-
-//Maching
-function matchUserAndSqlWords(callback) {
-    var matches = [];
-    userWords.forEach(function (word) {
-        if(sqlKeywords.indexOf(String(word).toUpperCase())>-1){
-            matches.push(word);
-        }
-    });
-    callback(matches);
-}
-
-function setUserWords(words) {
-    userWords = words;
 }
 
 function sqlSymmetricObfuscator() {
@@ -123,9 +83,7 @@ module.exports = {
     sqlDeobfuscation:   sqlDeobfuscation,
 
     tokensAndDelimiters: tokensAndDelimiters,
-    obfuscate: obfuscate,
-    setUserWords: setUserWords,
-    matchUserAndSqlWords: matchUserAndSqlWords
+    obfuscate: obfuscate
 };
 
 /**
