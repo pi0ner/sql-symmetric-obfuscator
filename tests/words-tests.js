@@ -7,8 +7,6 @@ var assert = require("chai").assert;
 var extend = require("util")._extend;
 var words = require("../Words");
 
-
-
 describe("Word processor tests", function() {
 
     before(function () {
@@ -76,6 +74,10 @@ describe("Word processor tests", function() {
             var otherWord = words.getRandomName();
             expect(words.getNewName(word)).to.eql(words.getNewName(similarWord));
             expect(words.getNewName(word)).to.not.eql(words.getNewName(otherWord));
+            expect(words.getNewName("field2",function (word) {
+                return "table1." + word
+            }))
+                .to.eql("table1.field2");
             done();
         }catch (err){
             done(err);

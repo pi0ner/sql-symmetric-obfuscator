@@ -58,11 +58,12 @@ function getRandomName() {
  * @return {String} newWord
  */
 function getNewName(word, newNameChanger) {
+    newNameChanger = newNameChanger? newNameChanger: getRandomName;
+
     if(getUnchangingWords().indexOf(String(word).toUpperCase())>-1){
         return word;
     }else{
         let newWord = dictionary.get(word);
-        newNameChanger = newNameChanger? newNameChanger: getRandomName;
         newWord = newWord? newWord: newNameChanger(word);
         dictionary.set(word,newWord);
         return newWord;
