@@ -45,7 +45,9 @@ function getTableName(query) {
 function appendTableToFields(query, callback) {
     var table = getTableName(query);
     getTokensAndDelimiters(query, function (tokensAndDelimiters) {
-
+        callback(changeNames(tokensAndDelimiters,function (word) {
+            return table + "." + word;
+        }));
     });
 }
 
@@ -93,5 +95,6 @@ function obfuscate(query,callback) {
 module.exports = {
     getTokensAndDelimiters: getTokensAndDelimiters,
     getTableName:   getTableName,
+    appendTableToFields: appendTableToFields,
     obfuscate: obfuscate
 };
