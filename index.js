@@ -25,35 +25,73 @@ var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
     userConfig.environment.outputFilename : "obfuscated_" + userConfig.environment.inputFilename;
 
-function getTableName(text) {
-    var tableNames = text.match(/CREATE OR REPLACE TABLE (.*)\s*\(/i);
+
+/**
+ * Gets table name in query
+ * @param {String} query
+ * @return {String} tableName
+ */
+function getTableName(query) {
+    var tableNames = query.match(/CREATE OR REPLACE TABLE (.*)\s*\(/i);
     return tableNames[1];
 }
 
-function tokensAndDelimiters(data, callback) {
+//TODO: end comment and function
+/**
+ * Change field to tableName.field in query
+ * @param {String} query
+ * @param {function} callback
+ */
+function appendTableToFields(query, callback) {
+    var table = getTableName(query);
+    getTokensAndDelimiters(query, function (tokensAndDelimiters) {
+        
+    });
+}
+
+/**
+ * Parse query to parts (words and delimiters), exec callback for every element
+ * @param {String} query
+ * @param {function} callback
+ */
+function getTokensAndDelimiters(query, callback) {
     // var output = data.split(new RegExp(sqlDelimiters.join("|")));//(/([, \n;])/);
-    var output = data.split(/([, \n;])/);
+    var output = query.split(/([, \n;])/);
     callback(output.filter(function (element) {
         return element?true:false
     }));
 }
 
-function changeNames(inputArray, callback) {
-    var outputArray = inputArray.map(function(word){
-        return words.getNewName(word)
-    })
-    callback(outputArray);
+/**
+ * Change words to callback(word)
+ * @param [String] inputArray
+ * @param {function} changer
+ * @return [String] changedNames
+ */
+function changeNames(inputArray, changer) {
+    var changedNames = inputArray.map(function(word){
+        return changer(word)
+    });
+    return changedNames;
 }
 
+/**
+ * Obfuscate query
+ * @param {String} query
+ * @param {Function} callback
+ */
 //TODO: const input
-function obfuscate(input,callback) {
-    tokensAndDelimiters(input,function (inputArray) {
+function obfuscate(query,callback) {
+    tokensAndDelimiters(query,function (inputArray) {
         changeNames(inputArray,function (changedArray) {
             callback(changedArray.join(""));
         })
     });
 }
 
+/**
+ * Main obfuscator method
+ */
 function sqlSymmetricObfuscator() {
     console.log(`Loading postgres version ${sqlDialect.version}, dictionary contains ${sqlDialect.keywords.length} words`);
 
@@ -78,6 +116,9 @@ function sqlSymmetricObfuscator() {
 
 }
 
+/**
+ * Main deobfuscator mathod
+ */
 function sqlDeobfuscation() {
     console.log('deobfuscation started...');
     console.log("Input and output words\n" + inputOutputWords.inputWords +"\n" +  inputOutputWords.outputWords );
@@ -87,13 +128,13 @@ module.exports = {
     sqlSymmetricObfuscator: sqlSymmetricObfuscator,
     sqlDeobfuscation:   sqlDeobfuscation,
 
-    tokensAndDelimiters: tokensAndDelimiters,
+    getTokensAndDelimiters: getTokensAndDelimiters,
     getTableName:   getTableName,
     obfuscate: obfuscate
 };
 
 /**
- * Выполняется только в случае если вызывается как файл
+ * Run if exec 'node thisModuleName'
  */
 if(require.main === module){
     sqlSymmetricObfuscator();

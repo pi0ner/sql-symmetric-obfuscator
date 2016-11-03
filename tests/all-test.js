@@ -61,12 +61,22 @@ describe("Obfuscator tests", function() {
         }
     });
 
-    it("tokensAndDelimites",function (done) {
+    it("appendTableToFields",function (done) {
+        try{
+            var text = "CREATE OR REPLACE TABLE name1(id INT, value TEXT);";
+            obfuscator.appendTableToFields(text)
+            done();
+        }catch (err){
+            done(err);
+        }
+    });
+
+    it("getTokensAndDelimiters",function (done) {
         try{
             var data = "SELECT \n field1, field2 FROM view1; ";
             var splitedData = ["SELECT"," ","\n"," ","field1",","," ","field2"," ","FROM"," ","view1",";"," "]
 
-            obfuscator.tokensAndDelimiters(data,function (obfuscatedData) {
+            obfuscator.getTokensAndDelimiters(data,function (obfuscatedData) {
                 expect(obfuscatedData).to.eql(splitedData);
                 done();
             });

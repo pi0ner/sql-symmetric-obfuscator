@@ -27,6 +27,10 @@ userWords.concat(userConfig.inputOutputWords.inputWords)
         return word.toUpperCase()
     });
 
+/**
+ * Return service sql and user words not to beobfuscation
+ * @return [String] words
+ */
 function getUnchangingWords() {
     var unchangingWords = new Array;
     unchangingWords =
@@ -37,6 +41,22 @@ function getUnchangingWords() {
     return unchangingWords;
 }
 
+/**
+ * Get random string with length setted in obfuscationConfig.wordLength
+ * @return {String} random word
+ */
+function getRandomName() {
+    return new Array(obfuscationConfig.wordLength).fill("hi").map(function (e) {
+        return Math.floor(Math.random()*(36-10) +10).toString(36)
+    }).join("");
+}
+
+/**
+ * Get random string if word not in const words, user/sql words if its,
+ * for similar obfuscating words return similar random string
+ * @param {String} word
+ * @return {String} newWord
+ */
 function getNewName(word) {
     if(getUnchangingWords().indexOf(String(word).toUpperCase())>-1){
         return word;
@@ -48,24 +68,28 @@ function getNewName(word) {
     }
 }
 
-function getRandomName() {
-    return new Array(obfuscationConfig.wordLength).fill("hi").map(function (e) {
-        return Math.floor(Math.random()*(36-10) +10).toString(36)
-    }).join("");
-}
-
-
+/**
+ * Set new user word array
+ * @param [String] words
+ */
 function setUserWords(words) {
     userWords = words.map(function (word) {
         return word.toUpperCase();
     });
 }
 
+/**
+ * Get user word array
+ * @return [String] userWords
+ */
 function getUserWords() {
     return userWords;
 }
 
-//Maching
+/**
+ * Maches user and sql words
+ * @param {function} callback
+ */
 function matchUserAndSqlWords(callback) {
     var matches = [];
     userWords.forEach(function (word) {
