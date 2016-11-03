@@ -51,6 +51,16 @@ describe("Obfuscator tests", function() {
         }
     });
 
+    it("getTableName",function (done) {
+        try{
+            var text = "CREATE OR REPLACE TABLE name1(id INT, value TEXT);";
+            expect(obfuscator.getTableName(text)).to.eql("name1");
+            done();
+        }catch (err){
+            done(err);
+        }
+    });
+
     it("tokensAndDelimites",function (done) {
         try{
             var data = "SELECT \n field1, field2 FROM view1; ";

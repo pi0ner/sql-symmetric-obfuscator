@@ -25,6 +25,11 @@ var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
     userConfig.environment.outputFilename : "obfuscated_" + userConfig.environment.inputFilename;
 
+function getTableName(text) {
+    var tableNames = text.match(/CREATE OR REPLACE TABLE (.*)\s*\(/i);
+    return tableNames[1];
+}
+
 function tokensAndDelimiters(data, callback) {
     // var output = data.split(new RegExp(sqlDelimiters.join("|")));//(/([, \n;])/);
     var output = data.split(/([, \n;])/);
@@ -83,6 +88,7 @@ module.exports = {
     sqlDeobfuscation:   sqlDeobfuscation,
 
     tokensAndDelimiters: tokensAndDelimiters,
+    getTableName:   getTableName,
     obfuscate: obfuscate
 };
 

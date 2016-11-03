@@ -18,6 +18,8 @@ var sqlKeywords = sqlDialect.keywords
     });
 var sqlDelimiters = sqlDialect.delimiters;
 
+var dictionary = new HashMap();
+
 var userWords = new Array;
 userWords.concat(userConfig.inputOutputWords.inputWords)
     .concat(userConfig.inputOutputWords.outputWords)
@@ -34,8 +36,6 @@ function getUnchangingWords() {
     ;
     return unchangingWords;
 }
-
-var dictionary = new HashMap();
 
 function getNewName(word) {
     if(getUnchangingWords().indexOf(String(word).toUpperCase())>-1){
