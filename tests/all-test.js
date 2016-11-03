@@ -1,7 +1,7 @@
 var expect = require("chai").expect;
 var assert = require("chai").assert;
 var extend = require("util")._extend;
-var obfuscator = require("../index");
+var obfuscator = require("../Obfuscator");
 var words = require("../Words");
 
 describe("Obfuscator tests", function() {
