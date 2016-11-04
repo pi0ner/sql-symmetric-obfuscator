@@ -51,16 +51,22 @@ function getRandomName() {
     }).join("");
 }
 
+//TODO: fix case sansitive filter
 /**
  * Get random string if word not in const words, user/sql words if its,
  * for similar obfuscating words return similar random string
  * @param {String} word
+ * @param {Function} newNameChanger - method return new string
+ * @param {String} filter - method return [String] list words not user in changing
  * @return {String} newWord
  */
-function getNewName(word, newNameChanger) {
+function getNewName(word, newNameChanger, filter) {
     newNameChanger = newNameChanger? newNameChanger: getRandomName;
+    filter = filter? filter : getUnchangingWords;;
 
-    if(getUnchangingWords().indexOf(String(word).toUpperCase())>-1){
+    // console.log(word + "|" + filter().indexOf(String(word)));//dd
+
+    if(filter().indexOf(String(word).toUpperCase())>-1){
         return word;
     }else{
         let newWord = dictionary.get(word);
@@ -107,5 +113,6 @@ module.exports = {
     getUserWords: getUserWords,
     getNewName: getNewName,
     getRandomName: getRandomName,
+    getUnchangingWords: getUnchangingWords,
     matchUserAndSqlWords: matchUserAndSqlWords
 }

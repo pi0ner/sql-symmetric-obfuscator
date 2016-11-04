@@ -31,20 +31,8 @@ describe("Obfuscator tests", function() {
 
     it("getTableName",function (done) {
         try{
-            var text = "CREATE OR REPLACE TABLE name1(id INT, value TEXT);";
-            expect(obfuscator.getTableName(text)).to.eql("name1");
-            done();
-        }catch (err){
-            done(err);
-        }
-    });
-
-    it("appendTableToFields",function (done) {
-        try{
-            var text = "CREATE OR REPLACE TABLE name1(id INT, value TEXT);";
-            obfuscator.appendTableToFields(text,function (words) {
-                expect(words.join("")).to.eql("CREATE OR REPLACE TABLE name1(id INT, value TEXT);");
-            });
+            var text = "CREATE OR REPLACE TABLE table1(id INT, value TEXT);";
+            expect(obfuscator.getTableName(text)).to.eql("table1");
             done();
         }catch (err){
             done(err);
@@ -61,6 +49,18 @@ describe("Obfuscator tests", function() {
                 done();
             });
         } catch (err){
+            done(err);
+        }
+    });
+
+    it("appendTableToFields",function (done) {
+        try{
+            var text = "CREATE OR REPLACE TABLE table1(id1 INT, value1 TEXT);";
+            obfuscator.appendTableToFields(text,function (wordArray) {
+                expect(wordArray.join("")).to.eql("CREATE OR REPLACE TABLE table1(table1.id1 INT, table1.value1 TEXT);");
+            });
+            done();
+        }catch (err){
             done(err);
         }
     });

@@ -36,7 +36,20 @@ function getTableName(query) {
     return tableNames[1];
 }
 
-//TODO: end comment and function
+/**
+ * Parse query to parts (words and delimiters), exec callback for every element
+ * @param {String} query
+ * @param {function} callback
+ */
+function getTokensAndDelimiters(query, callback) {
+    // var output = data.split(new RegExp(sqlDelimiters.join("|")));//(/([, \n;])/);
+    var output = query.split(/([, \n;\(\))])/);
+    callback(output.filter(function (element) {
+        return element?true:false
+    }));
+}
+
+//TODO: getNewName and changeName - is duplicates
 /**
  * Change field to tableName.field in query
  * @param {String} query
@@ -45,23 +58,20 @@ function getTableName(query) {
 function appendTableToFields(query, callback) {
     var table = getTableName(query);
     getTokensAndDelimiters(query, function (tokensAndDelimiters) {
-        callback(changeNames(tokensAndDelimiters,function (word) {
-            return table + "." + word;
+        callback(changeNames(
+            tokensAndDelimiters,
+            function (word) {
+                return words.getNewName(
+                    word,
+                    function () {
+                        return table + "."+word;
+                    },
+                    function () {
+                        return words.getUnchangingWords().concat(table.toUpperCase());
+                    }
+                );
         }));
     });
-}
-
-/**
- * Parse query to parts (words and delimiters), exec callback for every element
- * @param {String} query
- * @param {function} callback
- */
-function getTokensAndDelimiters(query, callback) {
-    // var output = data.split(new RegExp(sqlDelimiters.join("|")));//(/([, \n;])/);
-    var output = query.split(/([, \n;])/);
-    callback(output.filter(function (element) {
-        return element?true:false
-    }));
 }
 
 /**

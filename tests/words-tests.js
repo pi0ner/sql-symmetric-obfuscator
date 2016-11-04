@@ -68,16 +68,28 @@ describe("Word processor tests", function() {
     });
 
     it("getNewName",function (done) {
+        var word = words.getRandomName();
+        var similarWord = extend(word);
+        var otherWord = words.getRandomName();
+        var table = "table1";
+
         try {
-            var word = words.getRandomName();
-            var similarWord = extend(word);
-            var otherWord = words.getRandomName();
             expect(words.getNewName(word)).to.eql(words.getNewName(similarWord));
             expect(words.getNewName(word)).to.not.eql(words.getNewName(otherWord));
+
             expect(words.getNewName("field2",function (word) {
-                return "table1." + word
+                return table + "." + word
             }))
                 .to.eql("table1.field2");
+
+            expect(words.getNewName(
+                "field2",
+                function (word) {
+                    return table + "." + word;
+                },
+                function () {
+                    return ["any",table];
+                })).to.eql(table + "." + "field2");
             done();
         }catch (err){
             done(err);
