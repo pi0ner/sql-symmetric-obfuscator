@@ -51,6 +51,12 @@ function getRandomName() {
     }).join("");
 }
 
+function defaultFilter (word, excludeWords) {
+    excludeWords = excludeWords? excludeWords: getUnchangingWords;
+
+    return excludeWords().indexOf(String(word).toUpperCase())>-1
+}
+
 //TODO: fix case sansitive filter
 /**
  * Get random string if word not in const words, user/sql words if its,
@@ -62,11 +68,12 @@ function getRandomName() {
  */
 function getNewName(word, newNameChanger, filter) {
     newNameChanger = newNameChanger? newNameChanger: getRandomName;
-    filter = filter? filter : getUnchangingWords;;
 
-    // console.log(word + "|" + filter().indexOf(String(word)));//dd
+    filter = filter? filter : defaultFilter;
 
-    if(filter().indexOf(String(word).toUpperCase())>-1){
+    console.log( filter(word));
+
+    if(filter(word)){
         return word;
     }else{
         let newWord = dictionary.get(word);
@@ -113,6 +120,7 @@ module.exports = {
     getUserWords: getUserWords,
     getNewName: getNewName,
     getRandomName: getRandomName,
+    defaultFilter: defaultFilter,
     getUnchangingWords: getUnchangingWords,
     matchUserAndSqlWords: matchUserAndSqlWords
 }

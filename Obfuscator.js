@@ -66,8 +66,18 @@ function appendTableToFields(query, callback) {
                     function () {
                         return table + "."+word;
                     },
-                    function () {
-                        return words.getUnchangingWords().concat(table.toUpperCase());
+                    function (word) {
+                        //TODO: remove indexOf + upperCase
+                        if(word.indexOf(table + ".")>-1)
+                            return true
+                        else
+                            return words.defaultFilter(
+                                word,
+                                //TODO:how??? func + element = func(elems + element)
+                                function () {
+                                    return words.getUnchangingWords().concat(table.toUpperCase())
+                                }
+                            );
                     }
                 );
         }));

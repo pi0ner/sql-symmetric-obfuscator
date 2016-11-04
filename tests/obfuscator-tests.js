@@ -55,7 +55,7 @@ describe("Obfuscator tests", function() {
 
     it("appendTableToFields",function (done) {
         try{
-            var text = "CREATE OR REPLACE TABLE table1(id1 INT, value1 TEXT);";
+            var text = "CREATE OR REPLACE TABLE table1(id1 INT, table1.value1 TEXT);";
             obfuscator.appendTableToFields(text,function (wordArray) {
                 expect(wordArray.join("")).to.eql("CREATE OR REPLACE TABLE table1(table1.id1 INT, table1.value1 TEXT);");
             });

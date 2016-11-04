@@ -87,9 +87,23 @@ describe("Word processor tests", function() {
                 function (word) {
                     return table + "." + word;
                 },
-                function () {
-                    return ["any",table];
-                })).to.eql(table + "." + "field2");
+                function (word) {
+                    return words.defaultFilter(word,function () {
+                        return ["any",table.toUpperCase()]
+                    });
+                })).to.eql("table1.field2");
+
+
+            expect(words.getNewName(
+                table,
+                function (word) {
+                    return table + "." + word;
+                },
+                function (word) {
+                    return words.defaultFilter(word,function () {
+                        return ["any",table.toUpperCase()]
+                    });
+                })).to.eql(table);
             done();
         }catch (err){
             done(err);
