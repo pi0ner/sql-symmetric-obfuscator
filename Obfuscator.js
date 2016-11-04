@@ -14,6 +14,8 @@ var words = require("./Words");
 var moduleConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'obfuscatorConfig.json'), 'utf8'));
 var userConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'userConfig.json'), 'utf8'));
 
+var sqlDialect = moduleConfig.postgres;
+
 //Module config
 var migrationConfig = moduleConfig.migration;
 
@@ -25,6 +27,15 @@ var inputFilename= userConfig.environment.inputFilename;
 var outputFilename = userConfig.environment.outputFilename ?
     userConfig.environment.outputFilename : "obfuscated_" + userConfig.environment.inputFilename;
 
+function showSettings () {
+    console.log(`Loading postgres version ${sqlDialect.version}, dictionary contains ${sqlDialect.keywords.length} words`);
+
+    console.log("Output file name: " + outputFilename);
+
+    words.matchUserAndSqlWords(function (matches) {
+        if(matches.length)console.log(`Warning fields: [${matches}] is sql keywords`);
+    });
+}
 
 /**
  * Gets table name in query
@@ -32,8 +43,10 @@ var outputFilename = userConfig.environment.outputFilename ?
  * @return {String} tableName
  */
 function getTableName(query) {
-    var tableNames = query.match(/CREATE OR REPLACE TABLE (.*)\s*\(/i);
-    return tableNames[1];
+    var tableNames = query.match(/CREATE OR REPLACE (TABLE|VIEW) (\S*)\s*(\(|AS)/i);
+    if(tableNames)
+        return tableNames[2];
+    else return "";
 }
 
 /**
@@ -104,15 +117,16 @@ function changeNames(inputArray, changer) {
  */
 //TODO: const input
 function obfuscate(query,callback) {
-    tokensAndDelimiters(query,function (inputArray) {
-        changeNames(inputArray,function (changedArray) {
-            callback(changedArray.join(""));
-        })
-    });
+    appendTableToFields(query,function (normalizedArray) {
+        callback(normalizedArray.join(""));
+    })
 }
 
 
 module.exports = {
+    showSettings: showSettings,
+    inputFilename:inputFilename,
+    outputFilename:outputFilename,
     getTokensAndDelimiters: getTokensAndDelimiters,
     getTableName:   getTableName,
     appendTableToFields: appendTableToFields,

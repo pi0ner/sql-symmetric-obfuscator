@@ -51,27 +51,30 @@ function getRandomName() {
     }).join("");
 }
 
+/**
+ * Default filter, excluded sql and user words
+ * @param {String} word
+ * @param {Function} [excluded = getUnchangingWords] - excluded string list
+ * @return {boolean} filtered
+ */
 function defaultFilter (word, excludeWords) {
     excludeWords = excludeWords? excludeWords: getUnchangingWords;
-
     return excludeWords().indexOf(String(word).toUpperCase())>-1
 }
 
-//TODO: fix case sansitive filter
+//TODO: fix case sensitive filter
 /**
  * Get random string if word not in const words, user/sql words if its,
  * for similar obfuscating words return similar random string
  * @param {String} word
- * @param {Function} newNameChanger - method return new string
- * @param {String} filter - method return [String] list words not user in changing
+ * @param {Function} [newNameChanger = getRandomName]- method return new string
+ * @param {String} [filter = defaultFilter]- method return [String] list words not user in changing
  * @return {String} newWord
  */
 function getNewName(word, newNameChanger, filter) {
     newNameChanger = newNameChanger? newNameChanger: getRandomName;
 
     filter = filter? filter : defaultFilter;
-
-    console.log( filter(word));
 
     if(filter(word)){
         return word;

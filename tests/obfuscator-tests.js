@@ -3,9 +3,10 @@
  */
 
 var expect = require("chai").expect;
-var assert = require("chai").assert;
-var extend = require("util")._extend;
 var obfuscator = require("../Obfuscator");
+var beforeEach = require("mocha").beforeEach;
+var before = require("mocha").before;
+var describe = require("mocha").describe;
 //var words = require("../Words");
 var setUserWords = require("../Words").setUserWords;
 
@@ -67,7 +68,7 @@ describe("Obfuscator tests", function() {
 
     it("obfuscate",function (done) {
         try{
-            var data = "SELECT \n field1, field2 AS field1 FROM view1; ";
+            var data = "CREATE OR REPLACE VIEW view1 AS SELECT \n field1, field2 AS field1 FROM view2; ";
             var targetOutputData = "SELECT \n field1, field2 FROM view1; "
             obfuscator.obfuscate(data,function (obfuscatedData) {
                 expect(obfuscatedData).to.eql(targetOutputData);
